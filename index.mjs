@@ -50,7 +50,7 @@ var client = new tmi.client(options);
 client.connect();
 
 
-client.on('message', (channel, tags, message, self) => {
+client.on('message', async(channel, tags, message, self) => {
     if (self) return;
 
     const options = { hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: true };
@@ -58,77 +58,103 @@ client.on('message', (channel, tags, message, self) => {
 
     console.log("PCG Check: ", `${timestamp} [${channel}] <${tags.username}>: ${message}`);
 	
-	if (message.match(/^!PCGDemo/i))
-	{  
-		console.log('Fetching DEMO data...');
-		(async () => { // with Async/Await
-			try {
-				const golduckSpecies = await dex.getPokemonSpeciesByName("golduck")
-				const frenchName = golduckSpecies.names.filter(pokeAPIName => pokeAPIName.language.name === 'fr')[0].name
-				console.log(frenchName)
-			} catch (error) {
-				throw error
+	//PCG Bot Messages
+	if (tags['user-id'] === '519435394')
+	{ 
+		const spawnEvent = /A wild (.*?) appears/ig.exec(message);
+
+		if (spawnEvent) 
+		{
+			const spawned = spawnEvent[1];
+			
+			const spawnInfo = await getPokeInfo(spawned);
+			const useBalls  = ballChecker(spawnInfo);
+			
+			if (spawnInfo === null)
+			{ 
+				client.say(channel, 'Unable to find information on that pokemon');
+				return;
 			}
-		})()
+
+			let LegendOrMyth = 'No';
+			
+			if (spawnInfo.is_Legendary === true)
+			{ LegendOrMyth = 'Legendary!'; }
+			if (spawnInfo.is_Mythical === true)
+			{ LegendOrMyth = 'Mythical!'; }
+			
+			client.say(channel, `Pokede Information about ${spawned}:`);
+			client.say(channel, `[𝙲𝚊𝚝𝚌𝚑 𝚁𝚊𝚝𝚎: ${spawnInfo.capture_rate}] [𝙻𝚎𝚐𝚎𝚗𝚍𝚊𝚛𝚢/𝙼𝚢𝚝𝚑𝚒𝚌𝚊𝚕: ${LegendOrMyth}] [𝚃𝚢𝚙𝚎: ${spawnInfo.types}] [${useBalls} ( ${useBalls.join(' ')} )]`);
+		}
+			
+		
 	}
 	
-	if (message.match(/^test/i))
-	{ console.log('Received'); }
+	// me, for debugging
+	if (tags['user-id'] === '71635907')
+	{ 
+		const xspawnEvent = /A wild (.*?) appears/ig.exec(message);
+
+		if (xspawnEvent) 
+		{
+			const xspawned = xspawnEvent[1];
+
+			const xspawnInfo = await getPokeInfo(xspawned);
+			const xuseBalls  = ballChecker(xspawnInfo);
+			
+			if (xspawnInfo === null)
+			{ 
+				client.say(channel, 'Unable to find information on that pokemon');
+				return;
+			}
+
+			let xLegendOrMyth = 'No';
+			
+			if (xspawnInfo.is_Legendary === true)
+			{ xLegendOrMyth = 'Legendary!'; }
+			if (xspawnInfo.is_Mythical === true)
+			{ xLegendOrMyth = 'Mythical!'; }
+			
+			client.say(channel, `Pokedex Information about ${xspawned}:`);
+			client.say(channel, `𝙲𝚊𝚝𝚌𝚑 𝚁𝚊𝚝𝚎           : ${xspawnInfo.capture_rate}`);
+			client.say(channel, `𝙻𝚎𝚐𝚎𝚗𝚍𝚊𝚛𝚢 𝚘𝚛 𝙼𝚢𝚝𝚑𝚒𝚌𝚊𝚕?: ${xLegendOrMyth}`);
+			client.say(channel, `𝚃𝚢𝚙𝚎                : ${xspawnInfo.types}`);
+			client.say(channel, `𝙱𝚊𝚕𝚕𝚜				: ${xuseBalls} ( ${xuseBalls.join(' ')} )`);
+		}
+
+	}
 	
 	
 	if (message.match(/^!PCGLookup/i))
 	{
+		return;
 		let pokeFind = parseMessage(message);
 		
 		if (pokeFind)
 		{
-			pokeFind = pokeFind.toLowerCase();
-			(async () => { // with Async/Await
-			try {
-				console.log ('getting PokeSpecies Info...');
-				const pokeSpeciesInfo = await dex.getPokemonSpeciesByName(pokeFind);
-				const captureRate	= pokeSpeciesInfo.capture_rate; //int 1-255, higher = easier to catch
-				console.log(captureRate);
-				const isLegendary	= pokeSpeciesInfo.is_legendary; //boolean
-				console.log(isLegendary);
-				const isMythical	= pokeSpeciesInfo.is_mythical;  //boolean
-				console.log(isMythical);
-				
-				console.log('Grabbing PokeInfo');
-				const pokeInfo	= await dex.getPokemonByName(pokeFind);
-				const pokeTypesRaw  = pokeInfo.types;
-				var pokeTypes = [];
-				
-				for (let i = 0; i <= pokeTypesRaw.length - 1; i++)
-				{
-					pokeTypes.push(pokeTypesRaw[i].type.name);
-				}	
-				
-				const PD = {
-					  capture_rate: captureRate,
-					  is_Legendary: isLegendary,
-					  is_Mythical: isMythical,
-					  pokeTypes: pokeTypes
-				};
-
-					console.log (`Info for ${pokeFind}:`)
-					console.log (`Capture Rate: ${PD.capture_rate}`);
-					console.log (`Legendary?  : ${PD.is_Legendary}`);
-					console.log (`Mythical?   : ${PD.is_Mythical}`);
-					console.log (`Type        : ${PD.pokeTypes}`);
-					console.log ("-----------------------------------------------------");
-		
-				}
-			catch (error) {
-				throw error;
+			const pokeInfo = await getPokeInfo(pokeFind);
+			const bestBalls = ballChecker(pokeFind);
+			
+			if (pokeInfo === null)
+			{ 
+				client.say(channel, 'Unable to find information on that pokemon');
+				return;
 			}
-			})();	
+
+			let LegendOrMyth = 'No';
+			
+			if (pokeInfo.is_Legendary === true)
+			{ LegendOrMyth = 'Legendary!'; }
+			if (pokeInfo.is_Mythical === true)
+			{ LegendOrMyth = 'Mythical!'; }
+			
+			client.say(channel, `Pokedex Information about ${pokeFind}:`);
+			client.say(channel, `[𝙲𝚊𝚝𝚌𝚑 𝚁𝚊𝚝𝚎: ${pokeInfo.capture_rate}] [𝙻𝚎𝚐𝚎𝚗𝚍𝚊𝚛𝚢/𝙼𝚢𝚝𝚑𝚒𝚌𝚊𝚕: ${LegendOrMyth}] [𝚃𝚢𝚙𝚎: ${pokeInfo.types}] [${bestBalls} ( ${bestBalls.join(' ')} )]`);
 		}
 		else
-		{ client.say(channel, `@${tags.username} - you seem to have forgotten to include a Pokemon after the command.`); }
-
+		{ client.say(channel, `@${tags.username} - you need to include a Pokemon name after the command.`); }
 	}
-		
+			
 });
 
 function parseMessage(data)
@@ -139,6 +165,139 @@ function parseMessage(data)
     if (match) 
         { return match[1].trim(); } // Extracted text after "!word"
     else
-        { return null;}
+        { return null; }
 };
 
+async function getPokeInfo(pokemonName){ // with Async/Await
+
+			//Sanitize variable to meet API requirements
+			pokemonName = pokemonName.toLowerCase().replace(/ /g, '-').replace(/\./g, '');
+
+			//MANUAL OVERRIDES FOR STUPID POKEMON NAMES
+			// These pokemon names are listed in a weird way in the API.
+			// These fixes should help make sure they're properly ID'd.
+			
+			// Mr Mime
+			if (pokemonName.match(/mrmime/ig) || pokemonName.match(/mr.mime/ig))
+			{ pokemonName = 'mr-mime' }
+			
+			// Oricorio
+			if (pokemonName.match(/oricorio/ig))
+			{ pokemonName = 'oricorio-baile'; }
+		
+			// Lycanroc
+			if (pokemonName.match(/lycanroc/ig))
+			{pokemonName = '745'; }
+
+			try 
+			{
+				console.log('Grabbing PokeInfo, please wait...');
+				const pokeInfo		= await dex.getPokemonByName(pokemonName);
+				const pokemonID		= pokeInfo.id;
+				const pokeTypesRaw  = pokeInfo.types;
+				var pokeTypes 		= [];
+				const pokeWeight	= pokeInfo.weight; // 0 to 9999
+				const pokeStats		= pokeInfo.stats;
+				
+				for (let i = 0; i <= pokeTypesRaw.length - 1; i++)
+				{
+					pokeTypes.push(pokeTypesRaw[i].type.name);
+				}
+				
+				
+				console.log ('getting PokeSpecies Info, please wait...');
+				const pokeSpeciesInfo 	= await dex.getPokemonSpeciesByName(pokemonID);
+				const captureRate		= pokeSpeciesInfo.capture_rate; //int 1-255, higher = easier to catch
+				const isLegendary		= pokeSpeciesInfo.is_legendary; //boolean
+				const isMythical		= pokeSpeciesInfo.is_mythical;  //boolean
+				
+				const PD = {
+					  capture_rate: captureRate,
+					  is_Legendary: isLegendary,
+					  is_Mythical: isMythical,
+					  types: pokeTypes,
+					  weight: pokeWeight,
+					  stats: pokeStats
+				};
+
+					console.log (`Info for ${pokemonName}:`);
+					console.log (`Capture Rate: ${PD.capture_rate}`);
+					console.log (`Legendary?  : ${PD.is_Legendary}`);
+					console.log (`Mythical?   : ${PD.is_Mythical}`);
+					console.log (`Type        : ${PD.types}`);
+					console.log (`Weight 	  : ${PD.weight}`);
+					console.log ("-----------------------------------------------------");
+			
+				return PD;
+			}
+			catch (error) 
+			{ 
+				console.log(error); 
+				return null;
+			}
+}
+
+function ballChecker(pokemon)
+{
+	var balls		= [];
+	console.log(pokemon);
+	var pokeHP		= getBaseStat(pokemon.stats, 'hp');
+	var pokeSpeed	= getBaseStat(pokemon.stats, 'speed');
+	
+	if (pokemon.capture_rate >= 175)
+	{ 
+	  balls.push('Pokeball'); 
+	  balls.push('Premierball');
+	}
+	else if (pokemon.capture_rate >= 100)
+	{ balls.push('Greatball'); }
+	else if (pokemon.capture_rate >= 25)
+	{ balls.push('Ultraball'); }
+	else
+	{ balls.push('Masterball'); }
+	
+	//Chonker alert!
+	if (pokemon.weight >= 2000)
+	{ balls.push('Heavyball'); }
+	
+	//Light bois
+	if (pokemon.weight <= 602)
+	{ balls.push('Featherball'); }
+	
+	if (pokemon.types.includes('bug') || pokemon.types.includes('water'))
+	{ balls.push('Netball'); }
+	
+	if (pokemon.types.includes('ghost'))
+	{ balls.push('Phantomball'); }
+
+	if (pokemon.types.includes('dark'))
+	{ balls.push('Nightball'); }
+
+	if (pokemon.types.includes('ice'))
+	{ balls.push('Frozenball'); }
+
+	if (pokemon.types.includes('poison') || pokemon.types.includes('psychic'))
+	{ balls.push('Cipherball'); }
+
+	if (pokemon.types.includes('electiric') || pokemon.types.includes('steel'))
+	{ balls.push('Magnetball'); }
+
+	if (pokeHP >= 100)
+	{ balls.push('Healball'); }
+
+	if (pokeSpeed >= 100)
+	{ balls.push('Fastball'); }
+
+	return balls;
+}
+
+
+// Function to get the base_stat for a specific stat name
+function getBaseStat(stats, statName)
+{
+	console.log(stats);
+		const stat = stats.find(stat => stat.stat.name.toLowerCase() === statName.toLowerCase());
+		console.log(`${statName}: ${stat}`);
+		return stat ? stat.base_stat : null;
+
+}
