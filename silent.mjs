@@ -133,41 +133,6 @@ client.on('message', async(channel, tags, message, self) => {
 
 	}
 	
-	
-	if (message.match(/^!PCGLookup/i))
-	{
-		return;
-		let pokeFind = parseMessage(message);
-		
-		if (pokeFind)
-		{
-			const pokeInfo = await getPokeInfo(pokeFind);
-			const bestBalls = ballChecker(pokeFind);
-			
-			if (pokeInfo === null)
-			{ 
-				// client.say(channel, 'Unable to find information on that pokemon');
-				return;
-			}
-
-			let LegendOrMyth = 'No';
-			
-			if (pokeInfo.is_Legendary === true)
-			{ LegendOrMyth = 'Legendary!'; }
-			if (pokeInfo.is_Mythical === true)
-			{ LegendOrMyth = 'Mythical!'; }
-			
-			// client.say(channel, `Pokedex Information about ${pokeFind}:`);
-			// client.say(channel, `[𝙲𝚊𝚝𝚌𝚑 𝚁𝚊𝚝𝚎: ${pokeInfo.capture_rate}] [𝙻𝚎𝚐𝚎𝚗𝚍𝚊𝚛𝚢/𝙼𝚢𝚝𝚑𝚒𝚌𝚊𝚕: ${LegendOrMyth}] [𝚃𝚢𝚙𝚎: ${pokeInfo.types}] [${bestBalls} ( ${bestBalls.join(' ')} )]`);
-		}
-		else
-		{ 
-		// client.say(channel, `@${tags.username} - you need to include a Pokemon name after the command.`); 
-		}
-	}
-			
-});
-
 function parseMessage(data)
 {
     const regex = /^![^\s]+(.*)$/; // Matches everything after "!word"
