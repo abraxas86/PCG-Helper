@@ -72,6 +72,7 @@ const userPokemonNames = {}; // Store pokemonName for each user
 
 client.on('message', async(channel, tags, message, self) => {
     if (self) return;
+    if (channel.toLowerCase() == 'deemonrider') return;
 
     const options = { hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: true };
     const timestamp = new Date().toLocaleTimeString('en-US', options);
