@@ -111,7 +111,28 @@ client.on('message', async(channel, tags, message, self) => {
 			    console.error('Error downloading image:', error);
 			    return;
 			  }
+			
+			  if (stderr) {
+			    console.error('Error downloading image:', stderr);
+			    return;
+			  }
+			
+			  // Send notification only if the image download was successful
+			  sendNotification(notificationTitle, notificationText, notificationAction, notificationImage);
 			});
+
+			function sendNotification(title, content, action, imagePath) {
+			  // Send notification to phone
+			  exec(`termux-notification --title "${title}" --content "${content}" --action "${action}" --priority "high" --image-path "${imagePath}"`, (error, stdout, stderr) => {
+			    if (error) {
+			      console.error(`Error sending notification: ${error.message}`);
+			    }
+			    if (stderr) {
+			      console.error(`Error sending notification: ${stderr}`);
+			    }
+			  });
+			}
+
 			
 			if (spawnInfo === null)
 			{ 
