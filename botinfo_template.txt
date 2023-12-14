@@ -1,2 +1,5 @@
-username='[Account to use]';
-auth='oauth:[OAUTH token for account]';
+{
+  "username": "[the user the script will use]",
+  "auth": "oauth:[oauth token]",
+  "channels": ["channels", "to", "join"]
+}
