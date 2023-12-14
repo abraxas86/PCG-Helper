@@ -17,8 +17,15 @@ I have no idea what I'm doing, so hopefully I have things set up correctly...  N
       - *pokedex-promise-v2*: Used for connecting with the Poke API
    
 ### Setting it up:
-- Edit ***botinfo.txt*** with your bot's username and OAUTH token
-- `node index.js` to start the bot
+- Edit ***botinfo_template.txt*** with your bot's username, OAUTH token, and the channels you want it to sit in
+- Rename your modified botinfo_template.txt to *botinfo.txt*
+- `node mobile.mjs` to start the bot on Anroid (through Termux)
+- `node silent.mjs` for the version that only spits info into the terminal and not into the chat
+- `node index.mjs`  for the fully-fledged version that outputs to the terminal and chat
+
+## mobile.mjs
+This version of the script has been designed to run on Android through Termux.  It will output the usual information to the CLI but also send an Android notification with termux-notifications that includes the name and image of the pokemon, the capture rate, and the suggested balls.  Tapping on the notification will open Twitch to Deemonrider's channel so you can try to capture the spawned pokemon.
+
 
 ## Disclaimer
 The ball predictions probably aren't perfect.  I only had so much to work with so some of my math might be too generous/not generous enough.
