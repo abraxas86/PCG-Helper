@@ -1,34 +1,30 @@
 import fs from 'fs';       //To read the file in
 import tmi from 'tmi.js';  //Twitch API
 import Pokedex from 'pokedex-promise-v2'; //PokeAPI
+import { stringify } from 'flatted';
 
-let botAcct, botToken; // Bot creds
+let botAcct, botToken, channels; // Bot creds
 const dex = new Pokedex();
 
 try {
     const content = fs.readFileSync('./botinfo.txt', 'utf-8');
+    const config = JSON.parse(content);
 
-    // Extract name and color using regular expressions
-    const idMatch = content.match(/username='(.*?)'/);
-    const tokenMatch = content.match(/auth='(.*?)'/);
-
-    if (idMatch && tokenMatch) {
-        botAcct = idMatch[1];
-        botToken = tokenMatch[1];
-    } else {
-        console.log("pcg-index.js: ", 'Could not extract name and color from the file content.');
+    botAcct = config.username;
+    botToken = config.auth;
+    channels = config.channels;
     }
-} catch (error) {
-    console.error('Error reading the file:', error);
+catch (error) {
+    console.error(`Error reading the file ${botConfigPath}:`, error);
 }
 
-// Now you can use botAcct and botToken here
-if (botAcct && botToken) {
-    console.log("chedgob-index.js: ", "Successfully grabbed vars");
+if (botAcct && botToken && channels) {
+	console. clear();
+    console.log("Successfully grabbed vars");
+    console.log(`Operating in channels: ${channels}`);
 } else {
-    console.log("chedgob-index.js: ", "Something went wrong. Bot account and token not available.");
+    console.log("Something went wrong. Bot account, token, or channels not available.");
 }
-
 
 //BOT CONNECTION OPTIONS
 var options = {
@@ -43,11 +39,35 @@ var options = {
         username: botAcct,
         password: botToken
     },
-    channels: ["popcorn_cannon", "abraxas86", "deemonrider"]
+    channels: channels
 };
 
 var client = new tmi.client(options);
 client.connect();
+
+	const pokeballArt = `⠀⠀⠀⠀⠀⠀⠀⠀⣀⣤⣴⣶⣿⣿⣿⣿⣿⣿⣶⣦⣤⣀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⣠⣴⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⣄⠀⠀⠀⠀⠀
+⠀⠀⠀⣠⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣄⠀⠀⠀
+⠀⠀⣴⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⠀⠀
+⠀⣼⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠋⠁⠀⠀⠀⠉⠻⣿⣿⣿⣿⣿⣿⣿⣿⣧⠀
+⢰⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠁⠀⢠⣶⣶⣦⠀⠀⠸⣿⣿⣿⣿⣿⣿⣿⣿⡆
+⣿⣿⣿⣿⣿⣿⣿⣿⡿⠿⢻⣿⠀⠀⠸⣿⣿⡿⠁⠀⢀⣿⠈⠉⠙⠛⠿⢿⣿⣷
+⣿⣿⣿⣿⣿⠿⠋⠁⠀⠀⠈⢿⣦⡀⠀⠈⠉⠀⠀⢀⣾⠏⠀⠀⠀⠀⠀⠀⢸⣿
+⢿⣿⣿⠟⠁⠀⠀⠀⠀⠀⠀⠀⠙⠿⣶⣤⣤⣴⡾⠟⠃⠀⠀⠀⠀⠀⠀⠀⢸⣿
+⠸⣿⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣾⠇
+⠀⢻⣧⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣼⡟⠀
+⠀⠀⠻⣧⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣼⠟⠀⠀
+⠀⠀⠀⠙⢿⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⡿⠋⠀⠀⠀
+⠀⠀⠀⠀⠀⠙⠻⣶⣤⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣤⣶⠟⠋⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠉⠛⠻⠷⣶⣶⣶⣶⣶⣶⠾⠟⠛⠉⠀⠀⠀⠀⠀⠀⠀⠀`
+
+console.log(`\n\n${pokeballArt}`);
+console.log('\n\nPokemonCommunityAugmentation: Awaiting next spawn...');
+
+
+const userTimers = {}; // Object to store per-user timers
+const userPokemonNames = {}; // Store pokemonName for each user
+
 
 
 client.on('message', async(channel, tags, message, self) => {
@@ -55,6 +75,11 @@ client.on('message', async(channel, tags, message, self) => {
 
     const options = { hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: true };
     const timestamp = new Date().toLocaleTimeString('en-US', options);
+    const sender = tags.username;
+
+    // Check for pingback of
+    const pokeCheckRegex = /@(\S+) ((?:\S+\s?)+) is not registered in your Pokédex: :x:/;
+    const pokeCheckResponse = message.match(pokeCheckRegex);
 	
 	//PCG Bot Messages
 	if (tags['user-id'] === '519435394' || tags['user-id'] === '71635907')
@@ -95,10 +120,8 @@ client.on('message', async(channel, tags, message, self) => {
 			  console.log(`!pokecatch ${ball}`);
 			});
 		}
-			
-		
 	}
-	
+
 	// me, for debugging
 	if (tags['user-id'] === '71635907')
 	{ 
@@ -132,7 +155,70 @@ client.on('message', async(channel, tags, message, self) => {
 		}
 
 	}
+
+	if (message.match(/^!pokecheck/i))
+	{
+        if (!userTimers[sender]) {
+            // Use the user-specific object to store pokemonName
+            userPokemonNames[sender] = pokeCheckResponse ? pokeCheckResponse[2] : ''; 
+
+            userTimers[sender] = setTimeout(() => {
+                // Use the user-specific pokemonName in the response
+                client.say(channel, `@${sender} ${userPokemonNames[sender]} is registered in your pokedex: ✔`);
+            }, 1000);
+        }
+	}
+
+	// Check for the expected response from PokemonCommunityGame
+	const expectedResponseRegex = /(@\S+) ((?:\S+\s?)+) registered in/i;
+	const matchResult = message.match(expectedResponseRegex);
+	const responseFor = matchResult ? matchResult[1].substring(1) : null;
+	const pokeFor = matchResult ? matchResult[2] : null;
+
+	if (message.match(expectedResponseRegex) && userTimers[responseFor]) {
+		console.log ('detected!')
+	    // Clear the timer since the expected response came before the timer expired
+	    clearTimeout(userTimers[responseFor]);
+	    delete userTimers[responseFor];
+	    delete userPokemonNames[responseFor];
+	}
+
 	
+	
+	if (message.match(/^!PCGLookup/i))
+	{
+		return;
+		let pokeFind = parseMessage(message);
+		
+		if (pokeFind)
+		{
+			const pokeInfo = await getPokeInfo(pokeFind);
+			const bestBalls = ballChecker(pokeFind);
+			
+			if (pokeInfo === null)
+			{ 
+				// client.say(channel, 'Unable to find information on that pokemon');
+				return;
+			}
+
+			let LegendOrMyth = 'No';
+			
+			if (pokeInfo.is_Legendary === true)
+			{ LegendOrMyth = 'Legendary!'; }
+			if (pokeInfo.is_Mythical === true)
+			{ LegendOrMyth = 'Mythical!'; }
+			
+			// client.say(channel, `Pokedex Information about ${pokeFind}:`);
+			// client.say(channel, `[𝙲𝚊𝚝𝚌𝚑 𝚁𝚊𝚝𝚎: ${pokeInfo.capture_rate}] [𝙻𝚎𝚐𝚎𝚗𝚍𝚊𝚛𝚢/𝙼𝚢𝚝𝚑𝚒𝚌𝚊𝚕: ${LegendOrMyth}] [𝚃𝚢𝚙𝚎: ${pokeInfo.types}] [${bestBalls} ( ${bestBalls.join(' ')} )]`);
+		}
+		else
+		{ 
+		// client.say(channel, `@${tags.username} - you need to include a Pokemon name after the command.`); 
+		}
+	}
+			
+});
+
 function parseMessage(data)
 {
     const regex = /^![^\s]+(.*)$/; // Matches everything after "!word"
