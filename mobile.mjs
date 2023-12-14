@@ -1,7 +1,7 @@
 import fs from 'fs';       //To read the file in
 import tmi from 'tmi.js';  //Twitch API
 import Pokedex from 'pokedex-promise-v2'; //PokeAPI
-//import { stringify } from 'flatted';
+const { exec } = require('child_process'); //for sending notifications to your phone (via termux api)
 
 let botAcct, botToken, channels; // Bot creds
 const dex = new Pokedex();
@@ -61,6 +61,8 @@ client.connect();
 ⠀⠀⠀⠀⠀⠙⠻⣶⣤⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣤⣶⠟⠋⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠉⠛⠻⠷⣶⣶⣶⣶⣶⣶⠾⠟⠛⠉⠀⠀⠀⠀⠀⠀⠀⠀`
 
+
+console.clear();
 console.log(`\n\n${pokeballArt}`);
 console.log('\n\nPokemonCommunityAugmentation: Awaiting next spawn...');
 
@@ -95,6 +97,10 @@ client.on('message', async(channel, tags, message, self) => {
 			
 			const spawnInfo = await getPokeInfo(spawned);
 			const useBalls  = ballChecker(spawnInfo);
+
+			// Android notification setup
+			const notificationTitle = `Pokemon Spanwed! ${spawned}!`;
+			const notificationText = `Capture Rate: ${spawnInfo.capture_rate}. Suggested balls: ${useballs}`;
 			
 			if (spawnInfo === null)
 			{ 
@@ -121,6 +127,19 @@ client.on('message', async(channel, tags, message, self) => {
 
 			useBalls.forEach((ball, index) => {
 			  console.log(`!pokecatch ${ball}`);
+			});
+
+			// Send notification to phone
+			exec(`termux-notification --title "${notificationTitle}" --content "${notificationText}"`, (error, stdout, stderr) => {
+			  if (error) {
+			    console.error(`Error: ${error.message}`);
+			    return;
+			  }
+			  if (stderr) {
+			    console.error(`Error: ${stderr}`);
+			    return;
+			  }
+			  console.log(`Notification sent: ${stdout}`);
 			});
 		}
 	}
