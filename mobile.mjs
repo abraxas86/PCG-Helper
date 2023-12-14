@@ -74,9 +74,7 @@ const userPokemonNames = {}; // Store pokemonName for each user
 
 client.on('message', async(channel, tags, message, self) => {
     if (self) return;
-
-	console.log(`debug: [${channel}]: ${message}`);
-    
+   
     const options = { hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: true };
     const timestamp = new Date().toLocaleTimeString('en-US', options);
     const sender = tags.username;
@@ -92,6 +90,8 @@ client.on('message', async(channel, tags, message, self) => {
 
 		if (spawnEvent) 
 		{
+			console.log(`debug: Match found: ${message}`);
+			console.log(`debug: [${channel}]: ${message}`);
 			const spawned = spawnEvent[1];
 			
 			const spawnInfo = await getPokeInfo(spawned);
