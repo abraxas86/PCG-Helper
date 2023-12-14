@@ -143,7 +143,7 @@ client.on('message', async(channel, tags, message, self) => {
 			console.log(`debug: ${getImage}`);
 			
 			// Send notification to phone
-			exec(`termux-notification --title "${notificationTitle}" --content "${notificationText}"  --action "${notificationAction}" --priority "max" --image-path "${notificationImage}"
+			exec(`termux-notification --title "${notificationTitle}" --content "${notificationText}"  --action "${notificationAction}" --priority "high" --image-path "${notificationImage}"
 `, (error, stdout, stderr) => {
 			  if (error) {
 			    console.error(`Error: ${error.message}`);
