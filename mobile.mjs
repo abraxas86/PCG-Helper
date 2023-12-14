@@ -102,7 +102,6 @@ client.on('message', async(channel, tags, message, self) => {
 			const notificationTitle  = `Pokemon Spanwed! ${spawned}!`;
 			const notificationText   = `Capture Rate: ${spawnInfo.capture_rate}. Suggested balls: ${useBalls}`;
 			const notificationAction = `termux-open "twitch://stream/deemonrider"`
-			 --action action          action to execute when pressing the notification
 			
 			if (spawnInfo === null)
 			{ 
@@ -132,7 +131,7 @@ client.on('message', async(channel, tags, message, self) => {
 			});
 
 			// Send notification to phone
-			exec(`termux-notification --title "${notificationTitle}" --content "${notificationText}"`, (error, stdout, stderr) => {
+			exec(`termux-notification --title "${notificationTitle}" --content "${notificationText}"  --action "${notificationAction}"`, (error, stdout, stderr) => {
 			  if (error) {
 			    console.error(`Error: ${error.message}`);
 			    return;
