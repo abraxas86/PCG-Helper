@@ -86,7 +86,7 @@ client.on('message', async(channel, tags, message, self) => {
     const pokeCheckResponse = message.match(pokeCheckRegex);
 	
 	//PCG Bot Messages
-	if (tags['user-id'] === '519435394' || tags['user-id'] === '71635907')
+	if (tags['user-id'] === '519435394' || tags['user-id'] === '71635907' || tags.username.toLowerCase() === 'deemonrider')
 	{ 
 		const spawnEvent = /A wild (.*?) appears/ig.exec(message);
 
