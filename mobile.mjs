@@ -104,34 +104,40 @@ client.on('message', async(channel, tags, message, self) => {
 			const notificationImage = `${process.env.HOME}/storage/downloads/icon.png`;
 
 			const getImage = `wget ${spawnInfo.sprite} -O '${notificationImage}'`; //save sprite locally;
-			console.log(`debug: ${getImage}`);
-			
-			exec(getImage, (error, stdout, stderr) => {
-			  if (error) {
-			    console.error('Error downloading image:', error);
-			    return;
-			  }
-			
-			  if (stderr) {
-			    console.error('Error downloading image:', stderr);
-			    return;
-			  }
-			
-			  // Send notification only if the image download was successful
-			  sendNotification(notificationTitle, notificationText, notificationAction, notificationImage);
-			});
 
-			function sendNotification(title, content, action, imagePath) {
-			  // Send notification to phone
-			  exec(`termux-notification --title "${title}" --content "${content}" --action "${action}" --priority "high" --image-path "${imagePath}"`, (error, stdout, stderr) => {
-			    if (error) {
-			      console.error(`Error sending notification: ${error.message}`);
-			    }
-			    if (stderr) {
-			      console.error(`Error sending notification: ${stderr}`);
-			    }
+			const downloadImage = () => {
+			  return new Promise((resolve, reject) => {
+			    exec(getImage, (error, stdout, stderr) => {
+			      if (error || stderr) {
+			        reject(error || stderr);
+			      } else {
+			        resolve();
+			      }
+			    });
 			  });
-			}
+			};
+	
+			
+				// Use async/await to download the image
+				try {
+				  await downloadImage();
+				  // Send notification only if the image download was successful
+				  sendNotification(notificationTitle, notificationText, notificationAction, notificationImage);
+				} catch (error) {
+				  console.error('Error downloading image:', error);
+				}
+				
+				function sendNotification(title, content, action, imagePath) {
+				  // Send notification to phone
+				  exec(`termux-notification --title "${title}" --content "${content}" --action "${action}" --priority "high" --image-path "${imagePath}"`, (error, stdout, stderr) => {
+				    if (error) {
+				      console.error(`Error sending notification: ${error.message}`);
+				    }
+				    if (stderr) {
+				      console.error(`Error sending notification: ${stderr}`);
+				    }
+				  });
+				}
 
 			
 			if (spawnInfo === null)
