@@ -101,7 +101,7 @@ client.on('message', async(channel, tags, message, self) => {
 			const notificationText   = `Capture Rate: ${spawnInfo.capture_rate}.\nSuggested balls: ${useBalls}`;
 			const notificationAction = `termux-open "twitch://stream/deemonrider"`
 			
-			const notificationImage  = '/data/data/com.termux/files/home/git/PCG-Lookup/icon.png'
+			const notificationImage  = '~/storage/downloads/icon.png'
 
 			const getImage = `wget ${spawnInfo.sprite} -O '${notificationImage}'`; //save sprite locally;
 			console.log(`debug: ${getImage}`);
