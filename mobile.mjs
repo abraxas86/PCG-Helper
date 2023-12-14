@@ -112,10 +112,10 @@ client.on('message', async(channel, tags, message, self) => {
 			        reject(error || stderr);
 			      } else {
 			        resolve();
-			      }
-			    });
-			  });
-			};
+				      }
+				    });
+				  });
+				};
 	
 			
 				// Use async/await to download the image
@@ -129,7 +129,7 @@ client.on('message', async(channel, tags, message, self) => {
 				
 				function sendNotification(title, content, action, imagePath) {
 				  // Send notification to phone
-				  exec(`termux-notification --title "${title}" --content "${content}" --action "${action}" --priority "high" --image-path "${imagePath}"`, (error, stdout, stderr) => {
+				  exec(`termux-notification --title "${title}" --content "${content}" --action "${action}" --priority "high" --channel-id "PCG-spawn-detected" --image-path "${imagePath}"`, (error, stdout, stderr) => {
 				    if (error) {
 				      console.error(`Error sending notification: ${error.message}`);
 				    }
