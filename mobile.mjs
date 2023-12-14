@@ -140,7 +140,6 @@ client.on('message', async(channel, tags, message, self) => {
 			    console.error(`Error: ${stderr}`);
 			    return;
 			  }
-			  console.log(`Notification sent: ${stdout}`);
 			});
 		}
 	}
