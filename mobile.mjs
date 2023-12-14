@@ -166,9 +166,7 @@ client.on('message', async(channel, tags, message, self) => {
 			useBalls.forEach((ball, index) => {
 			  console.log(`!pokecatch ${ball}`);
 			});
-
-			console.log(`debug: ${getImage}`);
-			
+		
 			// Send notification to phone
 			exec(`termux-notification --title "${notificationTitle}" --content "${notificationText}"  --action "${notificationAction}" --priority "high" --image-path "${notificationImage}"
 `, (error, stdout, stderr) => {
