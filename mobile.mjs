@@ -100,6 +100,7 @@ client.on('message', async(channel, tags, message, self) => {
 			const notificationTitle  = `Pokemon Spanwed! ${spawned}!`;
 			const notificationText   = `Capture Rate: ${spawnInfo.capture_rate}. Suggested balls: ${useBalls}`;
 			const notificationAction = `termux-open "twitch://stream/deemonrider"`
+			const notificationImage  = spawnInfo.sprite;
 			
 			if (spawnInfo === null)
 			{ 
@@ -129,7 +130,8 @@ client.on('message', async(channel, tags, message, self) => {
 			});
 
 			// Send notification to phone
-			exec(`termux-notification --title "${notificationTitle}" --content "${notificationText}"  --action "${notificationAction}" --priority "max"`, (error, stdout, stderr) => {
+			exec(`termux-notification --title "${notificationTitle}" --content "${notificationText}"  --action "${notificationAction}" --priority "max" --image-path "${notificationImage}
+`, (error, stdout, stderr) => {
 			  if (error) {
 			    console.error(`Error: ${error.message}`);
 			    return;
@@ -283,8 +285,6 @@ async function getPokeInfo(pokemonName){ // with Async/Await
 				const pokeWeight	= pokeInfo.weight; // 0 to 9999
 				const pokeStats		= pokeInfo.stats;
 				const sprite		= pokeInfo.sprites.front_default
-
-				console.log(`Debug: Sprite: ${sprite}`);
 				
 				for (let i = 0; i <= pokeTypesRaw.length - 1; i++)
 				{
