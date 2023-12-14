@@ -66,22 +66,12 @@ console.clear();
 console.log(`\n\n${pokeballArt}`);
 console.log('\n\nPokemonCommunityAugmentation: Awaiting next spawn...');
 
-
-const userTimers = {}; // Object to store per-user timers
-const userPokemonNames = {}; // Store pokemonName for each user
-
-
-
 client.on('message', async(channel, tags, message, self) => {
     if (self) return;
    
     const options = { hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: true };
     const timestamp = new Date().toLocaleTimeString('en-US', options);
     const sender = tags.username;
-
-    // Check for pingback of
-    const pokeCheckRegex = /@(\S+) ((?:\S+\s?)+) is not registered in your Pokédex: :x:/;
-    const pokeCheckResponse = message.match(pokeCheckRegex);
 	
 	//PCG Bot Messages
 	if (tags['user-id'] === '519435394' || tags['user-id'] === '71635907' || tags.username.toLowerCase() === 'deemonrider')
@@ -117,7 +107,6 @@ client.on('message', async(channel, tags, message, self) => {
 				    });
 				  });
 				};
-	
 			
 				// Use async/await to download the image
 				try {
@@ -143,7 +132,6 @@ client.on('message', async(channel, tags, message, self) => {
 			
 			if (spawnInfo === null)
 			{ 
-				// client.say(channel, 'Unable to find information on that pokemon');
 				return;
 			}
 
@@ -181,105 +169,7 @@ client.on('message', async(channel, tags, message, self) => {
 			  }
 			});
 		}
-	}
-
-	// me, for debugging
-	if (tags['user-id'] === '71635907')
-	{ 
-		const xspawnEvent = /A wild (.*?) appears/ig.exec(message);
-
-		if (xspawnEvent) 
-		{
-			const xspawned = xspawnEvent[1];
-
-			const xspawnInfo = await getPokeInfo(xspawned);
-			const xuseBalls  = ballChecker(xspawnInfo);
-			
-			if (xspawnInfo === null)
-			{ 
-				// client.say(channel, 'Unable to find information on that pokemon');
-				return;
-			}
-
-			let xLegendOrMyth = 'No';
-			
-			if (xspawnInfo.is_Legendary === true)
-			{ xLegendOrMyth = 'Legendary!'; }
-			if (xspawnInfo.is_Mythical === true)
-			{ xLegendOrMyth = 'Mythical!'; }
-			
-			// client.say(channel, `Pokedex Information about ${xspawned}:`);
-			// client.say(channel, `𝙲𝚊𝚝𝚌𝚑 𝚁𝚊𝚝𝚎           : ${xspawnInfo.capture_rate}`);
-			// client.say(channel, `𝙻𝚎𝚐𝚎𝚗𝚍𝚊𝚛𝚢 𝚘𝚛 𝙼𝚢𝚝𝚑𝚒𝚌𝚊𝚕?: ${xLegendOrMyth}`);
-			// client.say(channel, `𝚃𝚢𝚙𝚎                : ${xspawnInfo.types}`);
-			// client.say(channel, `𝙱𝚊𝚕𝚕𝚜				: ${xuseBalls} ( ${xuseBalls.join(' ')} )`);
-		}
-
-	}
-
-  /*
-	if (message.match(/^!pokecheck/i))
-	{
-        if (!userTimers[sender]) {
-            // Use the user-specific object to store pokemonName
-            userPokemonNames[sender] = pokeCheckResponse ? pokeCheckResponse[2] : ''; 
-
-            userTimers[sender] = setTimeout(() => {
-                // Use the user-specific pokemonName in the response
-                client.say(channel, `@${sender} ${userPokemonNames[sender]} is registered in your pokedex: ✔`);
-            }, 1000);
-        }
-	}
- */
-
-	// Check for the expected response from PokemonCommunityGame
-	const expectedResponseRegex = /(@\S+) ((?:\S+\s?)+) registered in/i;
-	const matchResult = message.match(expectedResponseRegex);
-	const responseFor = matchResult ? matchResult[1].substring(1) : null;
-	const pokeFor = matchResult ? matchResult[2] : null;
-
-	if (message.match(expectedResponseRegex) && userTimers[responseFor]) {
-		console.log ('detected!')
-	    // Clear the timer since the expected response came before the timer expired
-	    clearTimeout(userTimers[responseFor]);
-	    delete userTimers[responseFor];
-	    delete userPokemonNames[responseFor];
-	}
-
-	
-	
-	if (message.match(/^!PCGLookup/i))
-	{
-		return;
-		let pokeFind = parseMessage(message);
-		
-		if (pokeFind)
-		{
-			const pokeInfo = await getPokeInfo(pokeFind);
-			const bestBalls = ballChecker(pokeFind);
-			
-			if (pokeInfo === null)
-			{ 
-				// client.say(channel, 'Unable to find information on that pokemon');
-				return;
-			}
-
-			let LegendOrMyth = 'No';
-			
-			if (pokeInfo.is_Legendary === true)
-			{ LegendOrMyth = 'Legendary!'; }
-			if (pokeInfo.is_Mythical === true)
-			{ LegendOrMyth = 'Mythical!'; }
-			
-			// client.say(channel, `Pokedex Information about ${pokeFind}:`);
-			// client.say(channel, `[𝙲𝚊𝚝𝚌𝚑 𝚁𝚊𝚝𝚎: ${pokeInfo.capture_rate}] [𝙻𝚎𝚐𝚎𝚗𝚍𝚊𝚛𝚢/𝙼𝚢𝚝𝚑𝚒𝚌𝚊𝚕: ${LegendOrMyth}] [𝚃𝚢𝚙𝚎: ${pokeInfo.types}] [${bestBalls} ( ${bestBalls.join(' ')} )]`);
-		}
-		else
-		{ 
-		// client.say(channel, `@${tags.username} - you need to include a Pokemon name after the command.`); 
-		}
-	}
-			
+	}		
 });
 
 function parseMessage(data)
@@ -316,7 +206,6 @@ async function getPokeInfo(pokemonName){ // with Async/Await
 
 			try 
 			{
-				//console.log('Grabbing PokeInfo, please wait...');
 				const pokeInfo		= await dex.getPokemonByName(pokemonName);
 				const pokemonID		= pokeInfo.id;
 				const pokeTypesRaw  	= pokeInfo.types;
@@ -331,7 +220,6 @@ async function getPokeInfo(pokemonName){ // with Async/Await
 				}
 				
 				
-				//console.log ('getting PokeSpecies Info, please wait...');
 				const pokeSpeciesInfo 	= await dex.getPokemonSpeciesByName(pokemonID);
 				const captureRate		= pokeSpeciesInfo.capture_rate; //int 1-255, higher = easier to catch
 				const isLegendary		= pokeSpeciesInfo.is_legendary; //boolean
@@ -347,30 +235,18 @@ async function getPokeInfo(pokemonName){ // with Async/Await
 					  sprite: sprite
 				};
 
-/*
-					console.log (`Info for ${pokemonName}:`);
-					console.log (`Capture Rate: ${PD.capture_rate}`);
-					console.log (`Legendary?  : ${PD.is_Legendary}`);
-					console.log (`Mythical?   : ${PD.is_Mythical}`);
-					console.log (`Type        : ${PD.types}`);
-					console.log (`Weight 	  : ${PD.weight}`);
-					console.log ("-----------------------------------------------------");
-*/
-
 				return PD;
 			}
 			catch (error) 
 			{ 
-				// console.log(error); 
 				return null;
 			}
 }
 
 function ballChecker(pokemon)
 {
-	var balls		= [];
-	// console.log(pokemon);
-	var pokeHP		= getBaseStat(pokemon.stats, 'hp');
+	var balls 	= [];
+	var pokeHP	= getBaseStat(pokemon.stats, 'hp');
 	var pokeSpeed	= getBaseStat(pokemon.stats, 'speed');
 	
 	if (pokemon.capture_rate >= 175)
