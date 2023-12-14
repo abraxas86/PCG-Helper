@@ -1,7 +1,8 @@
-import fs from 'fs';       //To read the file in
-import tmi from 'tmi.js';  //Twitch API
+import fs from 'fs';       		  //To read the file in
+import tmi from 'tmi.js';  		  //Twitch API
 import Pokedex from 'pokedex-promise-v2'; //PokeAPI
-import { exec } from 'child_process'; //for sending notifications to your phone (via termux api)
+import { exec } from 'child_process';     //for sending notifications to your phone (via termux api)
+import axios from 'axios';		  // to download the sprite
 
 let botAcct, botToken, channels; // Bot creds
 const dex = new Pokedex();
@@ -100,7 +101,15 @@ client.on('message', async(channel, tags, message, self) => {
 			const notificationTitle  = `Pokemon Spanwed: ${spawned}!`;
 			const notificationText   = `Capture Rate: ${spawnInfo.capture_rate}.\nSuggested balls: ${useBalls}`;
 			const notificationAction = `termux-open "twitch://stream/deemonrider"`
-			const notificationImage  =  '/data/data/com.termux/files/home/git/PCG-Lookup/pokeball.png'; //spawnInfo.sprite;
+			
+			const notificationImage  = '/data/data/com.termux/files/home/git/PCG-Lookup/icon.png'
+
+			const getImage = `wget ${pokeInfo.sprite} -O '${notifictaionImage}'`; //save sprite locally;
+			exec(getImage, (error, stdout, stderr) => {
+			  if (error) {
+			    console.error('Error downloading image:', error);
+			    return;
+			  }
 			
 			if (spawnInfo === null)
 			{ 
