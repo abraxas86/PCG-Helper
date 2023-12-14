@@ -97,8 +97,8 @@ client.on('message', async(channel, tags, message, self) => {
 			const useBalls  = ballChecker(spawnInfo);
 
 			// Android notification setup
-			const notificationTitle  = `Pokemon Spanwed! ${spawned}!`;
-			const notificationText   = `Capture Rate: ${spawnInfo.capture_rate}. Suggested balls: ${useBalls}`;
+			const notificationTitle  = `Pokemon Spanwed: ${spawned}!`;
+			const notificationText   = `Capture Rate: ${spawnInfo.capture_rate}.\nSuggested balls: ${useBalls}`;
 			const notificationAction = `termux-open "twitch://stream/deemonrider"`
 			const notificationImage  = spawnInfo.sprite;
 			
@@ -130,7 +130,7 @@ client.on('message', async(channel, tags, message, self) => {
 			});
 
 			// Send notification to phone
-			exec(`termux-notification --title "${notificationTitle}" --content "${notificationText}"  --action "${notificationAction}" --priority "max" --image-path ${notificationImage}
+			exec(`termux-notification --title "${notificationTitle}" --content "${notificationText}"  --action "${notificationAction}" --priority "max" --image-path "${notificationImage}"
 `, (error, stdout, stderr) => {
 			  if (error) {
 			    console.error(`Error: ${error.message}`);
