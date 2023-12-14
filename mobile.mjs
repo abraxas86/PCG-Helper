@@ -100,7 +100,7 @@ client.on('message', async(channel, tags, message, self) => {
 
 			// Android notification setup
 			const notificationTitle = `Pokemon Spanwed! ${spawned}!`;
-			const notificationText = `Capture Rate: ${spawnInfo.capture_rate}. Suggested balls: ${useballs}`;
+			const notificationText = `Capture Rate: ${spawnInfo.capture_rate}. Suggested balls: ${useBalls}`;
 			
 			if (spawnInfo === null)
 			{ 
