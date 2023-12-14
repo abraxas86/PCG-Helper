@@ -98,7 +98,7 @@ client.on('message', async(channel, tags, message, self) => {
 
 			// Android notification setup
 			const notificationTitle  = `Pokemon Spanwed: ${spawned}!`;
-			const notificationText   = `Capture Rate: ${spawnInfo.capture_rate}.\nSuggested balls: ${useBalls}`;
+			const notificationText   = `Capture Rate: ${spawnInfo.capture_rate}.\nSuggested balls: ${useBalls.join(', ')}`;
 			const notificationAction = `termux-open "twitch://stream/deemonrider"`
 			
 			const notificationImage = `${process.env.HOME}/storage/downloads/icon.png`;
