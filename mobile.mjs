@@ -110,7 +110,7 @@ client.on('message', async(channel, tags, message, self) => {
 			console.clear();
 
 			console.log (`  ${timestamp} Pokemon Spawned!  ${spawned}`);
-			console.log (`  --------------------------------------------------------------`)
+			console.log (`  ------------------------------------------------------`)
 			console.log (`  Capture Rate      : ${spawnInfo.capture_rate}`);
 			console.log (`  Legendary/Mythical: ${LegendOrMyth}`);
 			console.log (`  Types             : ${spawnInfo.types}`);
