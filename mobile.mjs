@@ -280,10 +280,13 @@ async function getPokeInfo(pokemonName){ // with Async/Await
 				//console.log('Grabbing PokeInfo, please wait...');
 				const pokeInfo		= await dex.getPokemonByName(pokemonName);
 				const pokemonID		= pokeInfo.id;
-				const pokeTypesRaw  = pokeInfo.types;
+				const pokeTypesRaw  	= pokeInfo.types;
 				var pokeTypes 		= [];
 				const pokeWeight	= pokeInfo.weight; // 0 to 9999
 				const pokeStats		= pokeInfo.stats;
+				const sprite		= pokeInfo.sprites.front_default
+
+				console.log(`Debug: Sprite: ${sprite}`);
 				
 				for (let i = 0; i <= pokeTypesRaw.length - 1; i++)
 				{
@@ -303,7 +306,8 @@ async function getPokeInfo(pokemonName){ // with Async/Await
 					  is_Mythical: isMythical,
 					  types: pokeTypes,
 					  weight: pokeWeight,
-					  stats: pokeStats
+					  stats: pokeStats,
+					  sprite: sprite
 				};
 
 /*
