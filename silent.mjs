@@ -1,7 +1,7 @@
 import fs from 'fs';       //To read the file in
 import tmi from 'tmi.js';  //Twitch API
 import Pokedex from 'pokedex-promise-v2'; //PokeAPI
-import { stringify } from 'flatted';
+//import { stringify } from 'flatted';
 
 let botAcct, botToken, channels; // Bot creds
 const dex = new Pokedex();
