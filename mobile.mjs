@@ -103,7 +103,7 @@ client.on('message', async(channel, tags, message, self) => {
 			
 			const notificationImage  = '/data/data/com.termux/files/home/git/PCG-Lookup/icon.png'
 
-			const getImage = `wget ${pokeInfo.sprite} -O '${notifictaionImage}'`; //save sprite locally;
+			const getImage = `wget ${spawnInfo.sprite} -O '${notifictaionImage}'`; //save sprite locally;
 			exec(getImage, (error, stdout, stderr) => {
 			  if (error) {
 			    console.error('Error downloading image:', error);
