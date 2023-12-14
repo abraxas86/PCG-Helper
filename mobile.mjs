@@ -99,8 +99,10 @@ client.on('message', async(channel, tags, message, self) => {
 			const useBalls  = ballChecker(spawnInfo);
 
 			// Android notification setup
-			const notificationTitle = `Pokemon Spanwed! ${spawned}!`;
-			const notificationText = `Capture Rate: ${spawnInfo.capture_rate}. Suggested balls: ${useBalls}`;
+			const notificationTitle  = `Pokemon Spanwed! ${spawned}!`;
+			const notificationText   = `Capture Rate: ${spawnInfo.capture_rate}. Suggested balls: ${useBalls}`;
+			const notificationAction = `termux-open "twitch://stream/deemonrider"`
+			 --action action          action to execute when pressing the notification
 			
 			if (spawnInfo === null)
 			{ 
