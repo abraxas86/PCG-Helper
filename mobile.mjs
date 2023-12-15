@@ -184,63 +184,71 @@ function parseMessage(data)
 };
 
 async function getPokeInfo(pokemonName){ // with Async/Await
-
-			//Sanitize variable to meet API requirements
-			pokemonName = pokemonName.toLowerCase().replace(/ /g, '-').replace(/\./g, '');
-
-			//MANUAL OVERRIDES FOR STUPID POKEMON NAMES
-			// These pokemon names are listed in a weird way in the API.
-			// These fixes should help make sure they're properly ID'd.
-			
-			// Mr Mime
-			if (pokemonName.match(/mrmime/ig) || pokemonName.match(/mr.mime/ig))
-			{ pokemonName = 'mr-mime' }
-			
-			// Oricorio
-			if (pokemonName.match(/oricorio/ig))
-			{ pokemonName = 'oricorio-baile'; }
+	//Sanitize variable to meet API requirements
+	pokemonName = pokemonName.toLowerCase().replace(/ /g, '-').replace(/\./g, '');
+	
+	//MANUAL OVERRIDES FOR STUPID POKEMON NAMES
+	// These pokemon names are listed in a weird way in the API.
+	// These fixes should help make sure they're properly ID'd.
+	
+	// Mr Mime
+	if (pokemonName.match(/mrmime/ig) || pokemonName.match(/mr.mime/ig))
+	{ pokemonName = 'mr-mime'; }
+	
+	// Oricorio
+	if (pokemonName.match(/oricorio/ig))
+	{ pokemonName = 'oricorio-baile'; }
+	
+	// Lycanroc
+	if (pokemonName.match(/lycanroc/ig))
+	{pokemonName = '745'; }
+	
+	// Nidoran (Female)
+	if (pokemonName.match(/Nidoran♀/ig))
+	{ pokemonname = 'nidoran-f'; }
+	    
+	// Nidoran (Male)
+	if pokemonName.match(/Nidoran♂/ig))
+	{ pokemonName = 'nidoran-m'; }
+	
+	
+	try 
+	{
+		const pokeInfo		= await dex.getPokemonByName(pokemonName);
+		const pokemonID		= pokeInfo.id;
+		const pokeTypesRaw  	= pokeInfo.types;
+		var pokeTypes 		= [];
+		const pokeWeight	= pokeInfo.weight; // 0 to 9999
+		const pokeStats		= pokeInfo.stats;
+		const sprite		= pokeInfo.sprites.front_default
 		
-			// Lycanroc
-			if (pokemonName.match(/lycanroc/ig))
-			{pokemonName = '745'; }
-
-			try 
-			{
-				const pokeInfo		= await dex.getPokemonByName(pokemonName);
-				const pokemonID		= pokeInfo.id;
-				const pokeTypesRaw  	= pokeInfo.types;
-				var pokeTypes 		= [];
-				const pokeWeight	= pokeInfo.weight; // 0 to 9999
-				const pokeStats		= pokeInfo.stats;
-				const sprite		= pokeInfo.sprites.front_default
-				
-				for (let i = 0; i <= pokeTypesRaw.length - 1; i++)
-				{
-					pokeTypes.push(pokeTypesRaw[i].type.name);
-				}
-				
-				
-				const pokeSpeciesInfo 	= await dex.getPokemonSpeciesByName(pokemonID);
-				const captureRate		= pokeSpeciesInfo.capture_rate; //int 1-255, higher = easier to catch
-				const isLegendary		= pokeSpeciesInfo.is_legendary; //boolean
-				const isMythical		= pokeSpeciesInfo.is_mythical;  //boolean
-				
-				const PD = {
-					  capture_rate: captureRate,
-					  is_Legendary: isLegendary,
-					  is_Mythical: isMythical,
-					  types: pokeTypes,
-					  weight: pokeWeight,
-					  stats: pokeStats,
-					  sprite: sprite
-				};
-
-				return PD;
-			}
-			catch (error) 
-			{ 
-				return null;
-			}
+		for (let i = 0; i <= pokeTypesRaw.length - 1; i++)
+		{
+			pokeTypes.push(pokeTypesRaw[i].type.name);
+		}
+		
+		
+		const pokeSpeciesInfo 	= await dex.getPokemonSpeciesByName(pokemonID);
+		const captureRate		= pokeSpeciesInfo.capture_rate; //int 1-255, higher = easier to catch
+		const isLegendary		= pokeSpeciesInfo.is_legendary; //boolean
+		const isMythical		= pokeSpeciesInfo.is_mythical;  //boolean
+		
+		const PD = {
+			  capture_rate: captureRate,
+			  is_Legendary: isLegendary,
+			  is_Mythical: isMythical,
+			  types: pokeTypes,
+			  weight: pokeWeight,
+			  stats: pokeStats,
+			  sprite: sprite
+		};
+	
+		return PD;
+	}
+	catch (error) 
+	{ 
+		return null;
+	}
 }
 
 function ballChecker(pokemon)
