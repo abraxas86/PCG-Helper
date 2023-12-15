@@ -208,7 +208,7 @@ async function getPokeInfo(pokemonName){ // with Async/Await
 	{ pokemonname = 'nidoran-f'; }
 	    
 	// Nidoran (Male)
-	if pokemonName.match(/Nidoran♂/ig))
+	if (pokemonName.match(/Nidoran♂/ig))
 	{ pokemonName = 'nidoran-m'; }
 	
 	
