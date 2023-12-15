@@ -10,11 +10,20 @@ When the Pokemon Community Game chats a spawn an encounter, it reaches out to th
 I have no idea what I'm doing, so hopefully I have things set up correctly...  Note that I run this solely on a Linux computer, I have no idea what's required to get this working in Windows.
 
 ### What you'll need:
+
+#### index.mjs & silent.mjs
 - Nodejs
   - npm packages:
       - *fs*: Used to read the botinfo.txt to get the account name and oauth token for the bot
       - *tmi.js*: Used to connect to Twitch and interface with the chat
       - *pokedex-promise-v2*: Used for connecting with the Poke API
+
+#### mobile.mjs
+- Android OS
+- Termux
+- Termux:API
+- Nodejs
+
    
 ### Setting it up:
 - Edit ***botinfo_template.txt*** with your bot's username, OAUTH token, and the channels you want it to sit in
