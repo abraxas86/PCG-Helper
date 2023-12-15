@@ -31,6 +31,7 @@ I have no idea what I'm doing, so hopefully I have things set up correctly...  N
 - `node mobile.mjs` to start the bot on Anroid (through Termux)
 - `node silent.mjs` for the version that only spits info into the terminal and not into the chat
 - `node index.mjs`  for the fully-fledged version that outputs to the terminal and chat
+- For your channel, you'll want to use something like BTTV and/or FFZ to make emotes of each pokeball type.  You'll want them to be triggered by their name with the first letter capitalized (ie: Ultraball, Pokeball, Netball, etc)
 
 ## mobile.mjs
 This version of the script has been designed to run on Android through Termux.  It will output the usual information to the CLI but also send an Android notification with termux-notifications that includes the name and image of the pokemon, the capture rate, and the suggested balls.  Tapping on the notification will open Twitch to Deemonrider's channel so you can try to capture the spawned pokemon.
