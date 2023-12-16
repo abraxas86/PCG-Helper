@@ -1,4 +1,4 @@
-# PCG-Lookup
+# PCG-Helper
 
 ## What's this?
 This is a Twitch bot that is meant to augment the PokemonCommunityGame created by @deemonrider and @jonaswagern.  The bot listens to the Twitch chat for spawns from the PCG bot and will provide some information on the pokeon as well as which balls will be best to use.  It also restores the ping-back if you already have the pokemon you're doing a !pokecheck on.
