@@ -374,7 +374,7 @@ const downloadImage = () => {
       console.log('================== 4. DEBUG TEST.  LOOKING FOR THIS IN OUTPUT.  =======================');
       // Send notification only if the image download was successful
       exec(
-        `termux-notification --title "${notificationTitle}" --content "${notificationText}" --action "${notificationAction}" --priority "high" --channel-id "PCG-spawn-detected" --image-path "${notificationImage}"`,
+        `termux-notification --title "${notificationTitle}" --content "${notificationText}" --action "${notificationAction}" --priority "high" --group "PCG-spawn-detected" --image-path "${notificationImage}" --ongoing`,
         (error, stdout, stderr) => {
           if (error) {
             console.error(`Error sending notification: ${error.message}`);
