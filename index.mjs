@@ -357,17 +357,20 @@ function androidNotificationSetup(spawned, spawnInfo, useBalls) {
 
   const getImage = `wget ${spawnInfo.sprite} -O '${notificationImage}'`; // save sprite locally;
 
-  const downloadImage = () => {
-    return new Promise((resolve, reject) => {
-      exec(getImage, (error, stdout, stderr) => {
-        if (error || stderr) {
-          reject(error || stderr);
-        } else {
-          resolve();
-        }
-      });
+const downloadImage = () => {
+  return new Promise((resolve, reject) => {
+    exec(getImage, (error, stdout, stderr) => {
+      if (error || stderr) {
+        console.error('Error in downloadImage:', error || stderr);
+        reject(error || stderr);
+      } else {
+        console.log('Image downloaded successfully:', stdout);
+        resolve();
+      }
     });
-  };
+  });
+};
+
 
   // Use async/await to download the image
   const sendNotification = async () => {
