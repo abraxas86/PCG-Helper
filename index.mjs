@@ -360,13 +360,10 @@ function androidNotificationSetup(spawned, spawnInfo, useBalls) {
 const downloadImage = () => {
   return new Promise((resolve, reject) => {
     exec(getImage, (error, stdout, stderr) => {
-    	console.log('================== 1. DEBUG TEST.  LOOKING FOR THIS IN OUTPUT.  =======================');
       if (error || stderr) {
-      	console.log('================== 2. DEBUG TEST.  LOOKING FOR THIS IN OUTPUT.  =======================');
         console.error('Error in downloadImage:', error || stderr);
-        reject(error || stderr);
+        //reject(error || stderr);
       } else {
-      	console.log('================== 3. DEBUG TEST.  LOOKING FOR THIS IN OUTPUT.  =======================');
         console.log('Image downloaded successfully:', stdout);
         resolve();
       }
