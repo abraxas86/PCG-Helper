@@ -97,6 +97,7 @@ const pokeCheckRegex2 =  /@(\S+) Please choose a valid Pokémon or Pokédex-ID./
 client.on('message', async(channel, tags, message, self) => {
     if (self) return;
 
+console.log(`ismobile: ${isMobile} | isSilent: ${isSilent}`);
     console.log(`[${channel}] [${tags['user-id']}]: ${message}`);
    
     const options = { hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: true };
