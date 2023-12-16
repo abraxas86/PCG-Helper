@@ -131,7 +131,6 @@ client.on('message', async(channel, tags, message, self) => {
 		//const pokeFor = matchResult ? matchResult[2] : null;
 
 		if (message.match(expectedResponseRegex) && userTimers[responseFor]) {
-			console.log ('detected!')
 		    // Clear the timer since the expected response came before the timer expired
 		    clearTimeout(userTimers[responseFor]);
 		    delete userTimers[responseFor];
@@ -139,7 +138,7 @@ client.on('message', async(channel, tags, message, self) => {
 		}
 	
 	//PCG Bot Messages
-	if (tags['user-id'] === '519435394' || tags['user-id'] === '71635907' || tags.username.toLowerCase() === 'deemonrider')
+	if (tags['user-id'] === '519435394' || tags['user-id'] === '71635907')
 	{ 
 		const spawnEvent = /A wild (.*?) appears/ig.exec(message);
 
