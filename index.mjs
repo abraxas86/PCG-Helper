@@ -129,15 +129,15 @@ client.on('message', async(channel, tags, message, self) => {
 		const expectedResponseRegex = /(@\S+) ((?:\S+\s?)+) registered in/i;
 		const expectedResponseRegex2 = /@(\S+) Please choose a valid Pokémon/i;
 		const matchResult = message.match(expectedResponseRegex);
-		const responseFor = matchResult ? matchResult[1].substring(1) : null;
-		//const pokeFor = matchResult ? matchResult[2] : null;
+		const username = tags.username;
 
-		if (message.match(expectedResponseRegex) && userTimers[responseFor]) {
+		if (matchResult && userTimers[username]) {
 		    // Clear the timer since the expected response came before the timer expired
-		    clearTimeout(userTimers[responseFor]);
-		    delete userTimers[responseFor];
-		    delete userPokemonNames[responseFor];
+		    clearTimeout(userTimers[username]);
+		    delete userTimers[username];
+		    delete userPokemonNames[username];
 		}
+
 	
 	//PCG Bot Messages
 	if (tags['user-id'] === '519435394' || tags['user-id'] === '71635907')
