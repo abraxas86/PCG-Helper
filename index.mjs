@@ -373,6 +373,7 @@ function androidNotificationSetup(spawned, spawnInfo, useBalls) {
   const sendNotification = async () => {
     try {
       await downloadImage();
+      console.log('================== DEBUG TEST.  LOOKING FOR THIS IN OUTPUT.  =======================');
       // Send notification only if the image download was successful
       exec(
         `termux-notification --title "${notificationTitle}" --content "${notificationText}" --action "${notificationAction}" --priority "high" --channel-id "PCG-spawn-detected" --image-path "${notificationImage}"`,
