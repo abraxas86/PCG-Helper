@@ -1,46 +1,50 @@
 # PCG-Lookup
 
 ## What's this?
-A Twitch bot that grabs data from the Pokemon REST API.  Meant to be used in conjunction with the Pokemon Community Game (PCG)
+This is a Twitch bot that is meant to augment the PokemonCommunityGame created by @deemonrider and @jonaswagern.  The bot listens to the Twitch chat for spawns from the PCG bot and will provide some information on the pokeon as well as which balls will be best to use.  It also restores the ping-back if you already have the pokemon you're doing a !pokecheck on.
+
+## Features:
+- Chat integration. Will provide information in-chat so you viewers can have a better chance at catching their pokemon
+- Restores pingback if you !pokecheck a pokemon you already have
+- Terminal output shortcuts for each pokeball that you can copy/paste straight into the chat
+- `-silent` switch to ONLY output information in the terminal
+- `-mobile` switch to run in Termux in Android.  It will display the information in the terminal, but also generate Android notifications when a pokemon spanws.  Clicking the notification will send you to @deemonrider's stream so you can try to catch the pokemon.
+
 
 ## How does that work?
-When the Pokemon Community Game chats a spawn an encounter, it reaches out to the Poke API (https://pokeapi.co/) to grab some basic stats on the pokemon.  It then uses this information to determine the best ball choices to throw at that pokemon.  The information for that data is based partially on the PCG documentation as well as information on Bulbapedia.
+When the Pokemon Community Game bot chats a spawn an encounter, it reaches out to the Poke API (https://pokeapi.co/) to grab some basic stats on the pokemon.  It then uses this information to determine the best ball choices to throw at that pokemon.  The information for that data is based partially on the PCG documentation as well as information on Bulbapedia.
 
-## How do I use it?
-I have no idea what I'm doing, so hopefully I have things set up correctly...  Note that I run this solely on a Linux computer, I have no idea what's required to get this working in Windows.
 
-### What you'll need:
 
-#### index.mjs & silent.mjs
-- Nodejs
-  - npm packages:
-      - *fs*: Used to read the botinfo.txt to get the account name and oauth token for the bot
-      - *tmi.js*: Used to connect to Twitch and interface with the chat
-      - *pokedex-promise-v2*: Used for connecting with the Poke API
+## What you'll need:
+Ensure **NodeJS** is installed on your computer.  
+***NOTE:*** This bot was developed in Linux and is untested in Windows, I have no idea if it will work there.
 
-#### mobile.mjs
-- Android OS
-- Termux
-- Termux:API
-- Nodejs
-
-   
+ 
 ### Setting it up:
-- Edit ***botinfo_template.txt*** with your bot's username, OAUTH token, and the channels you want it to sit in
-- Rename your modified botinfo_template.txt to *botinfo.txt*
-- `node mobile.mjs` to start the bot on Anroid (through Termux)
-- `node silent.mjs` for the version that only spits info into the terminal and not into the chat
+- Clone the git (or just download `botinfo_template.txt` and `index.mjs`
+- Edit `botinfo_template.txt` with your bot's _username_, _OAUTH token_, and the _channels_ you want it to sit in
+- Rename your modified `botinfo_template.txt` to *botinfo.txt*
+- `npm install` to download the dependencies needed:
+   -  `tmi.js`: for interfacing with Twitch chat
+   -  `fs`: to read in the info from botinfo.txt
+   -  `pokedex-promise-v2`: The Pokemon REST API, for grabbing the metadata on the Pokemon
+   -  `child_process`: (optional) needed for Android notifications
+
+### Running the bot:
 - `node index.mjs`  for the fully-fledged version that outputs to the terminal and chat
-- For your channel, you'll want to use something like BTTV and/or FFZ to make emotes of each pokeball type.  You'll want them to be triggered by their name with the first letter capitalized (ie: Ultraball, Pokeball, Netball, etc)
+- `node index.mjs -silent` for the version that only ouputs to the terminal (no Twitch chat integration)
+- `node index.mjs -mobile` for the Android version.  This runs similar to Silent, but generates Android notifictaions, too.
+- For your Twitch channel, you'll want to use something like BTTV and/or FFZ to make emotes of each pokeball type.  You'll want them to be triggered by their name with the first letter capitalized (ie: Ultraball, Pokeball, Netball, etc)
 
-## mobile.mjs
-This version of the script has been designed to run on Android through Termux.  It will output the usual information to the CLI but also send an Android notification with termux-notifications that includes the name and image of the pokemon, the capture rate, and the suggested balls.  Tapping on the notification will open Twitch to Deemonrider's channel so you can try to capture the spawned pokemon.
-
-
-## Disclaimer
+## Disclaimer:
 The ball predictions probably aren't perfect.  I only had so much to work with so some of my math might be too generous/not generous enough.
+I've also done my best to prevent the bot from dropping chats in Deemonrider's chat, however there is always the possibility that I screwed something up.  I'm not responsible if you get banned for spamming that channel.  If you want to be safe, don't put them in your list of channels to connect to.
 
-## To Do:
-- Fix the !PCGLookup command
-- Figure out how to make the chat formatting look nicer.  I really wish Twitch would allow multiline messages...
-- I need to add the channels to connect to in botinfo.txt instead of hard-coding it.
+#### To Do:
+[ ] Figure out how to make the chat formatting look nicer.  I really wish Twitch would allow multiline messages...
+
+
+#### Done:
+[X] Fix the !PCGLookup command  
+[X] Add the channels to connect to in botinfo.txt instead of hard-coding them.
