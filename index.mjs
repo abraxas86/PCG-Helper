@@ -373,7 +373,7 @@ const downloadImage = () => {
       await downloadImage();
       // Send notification only if the image download was successful
       exec(
-        `termux-notification --title "${notificationTitle}" --content "${notificationText}" --action '${notificationAction}' --priority "high" --group "PCG-spawn-detected" --image-path "${notificationImage}" --ongoing`,
+        `termux-notification --title "${notificationTitle}" --content "${notificationText}" --action '${notificationAction}' --priority "high" --group "PCG-spawn-detected" --image-path "${notificationImage}"`,
         (error, stdout, stderr) => {
           if (error) {
             console.error(`Error sending notification: ${error.message}`);
