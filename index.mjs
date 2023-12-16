@@ -360,10 +360,13 @@ function androidNotificationSetup(spawned, spawnInfo, useBalls) {
 const downloadImage = () => {
   return new Promise((resolve, reject) => {
     exec(getImage, (error, stdout, stderr) => {
+    	console.log('================== 1. DEBUG TEST.  LOOKING FOR THIS IN OUTPUT.  =======================');
       if (error || stderr) {
+      	console.log('================== 2. DEBUG TEST.  LOOKING FOR THIS IN OUTPUT.  =======================');
         console.error('Error in downloadImage:', error || stderr);
         reject(error || stderr);
       } else {
+      	console.log('================== 3. DEBUG TEST.  LOOKING FOR THIS IN OUTPUT.  =======================');
         console.log('Image downloaded successfully:', stdout);
         resolve();
       }
@@ -376,7 +379,7 @@ const downloadImage = () => {
   const sendNotification = async () => {
     try {
       await downloadImage();
-      console.log('================== DEBUG TEST.  LOOKING FOR THIS IN OUTPUT.  =======================');
+      console.log('================== 4. DEBUG TEST.  LOOKING FOR THIS IN OUTPUT.  =======================');
       // Send notification only if the image download was successful
       exec(
         `termux-notification --title "${notificationTitle}" --content "${notificationText}" --action "${notificationAction}" --priority "high" --channel-id "PCG-spawn-detected" --image-path "${notificationImage}"`,
