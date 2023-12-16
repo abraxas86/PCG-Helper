@@ -152,6 +152,8 @@ client.on('message', async(channel, tags, message, self) => {
 			const useBalls  = ballChecker(spawnInfo);
 
 			if (isMobile){
+
+				console.log('CONFIGURING ANDROID NOTIFICATION');
 			// Android notification setup
 			const notificationTitle  = `Pokemon Spanwed: ${spawned}!`;
 			const notificationText   = `Capture Rate: ${spawnInfo.capture_rate}.\nSuggested balls: ${useBalls.join(', ')}`;
