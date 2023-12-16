@@ -194,20 +194,7 @@ client.on('message', async(channel, tags, message, self) => {
 			useBalls.forEach((ball, index) => {
 			  console.log(`!pokecatch ${ball}`);
 			});
-		
-			if (isMobile){
-				// Send notification to phone
-				exec(`termux-notification --title "${notificationTitle}" --content "${notificationText}"  --action "${notificationAction}" --priority "high" --image-path "${notificationImage}"`, (error, stdout, stderr) => {
-				  if (error) {
-				    console.error(`Error: ${error.message}`);
-				    return;
-				  }
-				  if (stderr) {
-				    console.error(`Error: ${stderr}`);
-				    return;
-				  }
-				});
-			} // end if mobile notification send
+	
 		} // end if spawn event	
 	}	
 });
