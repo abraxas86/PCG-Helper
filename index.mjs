@@ -12,14 +12,16 @@ import fs from 'fs';       		    	  //To read the file in
 import tmi from 'tmi.js';  		 		  //Twitch API
 import Pokedex from 'pokedex-promise-v2'; //PokeAPI
 
-//for sending notifications to your phone (via termux api) 
-if (isMobile) {
-  import('child_process').then(childProcess => {
-    const { exec } = childProcess;
-  }).catch(error => {
+let exec;
+
+// for sending notifications to your phone (via termux api)
+import('child_process')
+  .then((childProcess) => {
+    exec = childProcess.exec;
+  })
+  .catch((error) => {
     console.error('Error importing child_process:', error);
   });
-}
 
 
 let botAcct, botToken, channels; // Bot creds
@@ -97,13 +99,12 @@ const pokeCheckRegex2 =  /@(\S+) Please choose a valid Pokémon or Pokédex-ID./
 client.on('message', async(channel, tags, message, self) => {
     if (self) return;
 
-console.log(`ismobile: ${isMobile} | isSilent: ${isSilent}`);
     console.log(`[${channel}] [${tags['user-id']}]: ${message}`);
    
     const options = { hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: true };
     const timestamp = new Date().toLocaleTimeString('en-US', options);
     const sender = tags.username;
-    const pokeCheckResponse = message.match(pokeCheckRegex); //for pokecheck pingback (pokemon not registered)
+    const pokeCheckResponse  = message.match(pokeCheckRegex); //for pokecheck pingback (pokemon not registered)
     const pokeCheckResponse2 = message.match(pokeCheckRegex2); //for pokecheck pingback (invalid pokemon name)
 
 
@@ -152,51 +153,9 @@ console.log(`ismobile: ${isMobile} | isSilent: ${isSilent}`);
 			const spawnInfo = await getPokeInfo(spawned);
 			const useBalls  = ballChecker(spawnInfo);
 
-			if (isMobile){
-
-				console.log('CONFIGURING ANDROID NOTIFICATION');
-			// Android notification setup
-			const notificationTitle  = `Pokemon Spanwed: ${spawned}!`;
-			const notificationText   = `Capture Rate: ${spawnInfo.capture_rate}.\nSuggested balls: ${useBalls.join(', ')}`;
-			const notificationAction = `termux-open "twitch://stream/deemonrider"`
-			
-			const notificationImage = `${process.env.HOME}/storage/downloads/icon.png`;
-
-			const getImage = `wget ${spawnInfo.sprite} -O '${notificationImage}'`; //save sprite locally;
-
-			const downloadImage = () => {
-			  return new Promise((resolve, reject) => {
-			    exec(getImage, (error, stdout, stderr) => {
-			      if (error || stderr) {
-			        reject(error || stderr);
-			      } else {
-			        resolve();
-				      }
-				    });
-				  });
-				};
-			
-				// Use async/await to download the image
-				try {
-				  await downloadImage();
-				  // Send notification only if the image download was successful
-				  sendNotification(notificationTitle, notificationText, notificationAction, notificationImage);
-				} catch (error) {
-				  console.error('Error downloading image:', error);
-				}
-				
-				function sendNotification(title, content, action, imagePath) {
-				  // Send notification to phone
-				  exec(`termux-notification --title "${title}" --content "${content}" --action "${action}" --priority "high" --channel-id "PCG-spawn-detected" --image-path "${imagePath}"`, (error, stdout, stderr) => {
-				    if (error) {
-				      console.error(`Error sending notification: ${error.message}`);
-				    }
-				    if (stderr) {
-				      console.error(`Error sending notification: ${stderr}`);
-				    }
-				  });
-				}
-			} //end mobile notification setup
+			if (isMobile) {
+			  androidNotificationSetup(spawned, spawnInfo, useBalls);
+			}		
 
 			if (spawnInfo === null)
 			{ 
@@ -328,6 +287,7 @@ async function getPokeInfo(pokemonName){ // with Async/Await
 	}
 	catch (error) 
 	{ 
+		console.error('Error fetching Pokémon information:', error);
 		return null;
 	}
 }
@@ -394,4 +354,55 @@ function getBaseStat(stats, statName)
 		// console.log(`${statName}: ${stat}`);
 		return stat ? stat.base_stat : null;
 
+}
+
+function androidNotificationSetup(spawned, spawnInfo, useBalls) {
+  if (!exec) {
+    console.error('Error: exec is not defined. Child process import might not have resolved yet.');
+    return;
+  }
+
+  // Android notification setup
+  const notificationTitle = `Pokemon Spawned: ${spawned}!`;
+  const notificationText = `Capture Rate: ${spawnInfo.capture_rate}.\nSuggested balls: ${useBalls.join(', ')}`;
+  const notificationAction = `termux-open "twitch://stream/deemonrider"`;
+  const notificationImage = `${process.env.HOME}/storage/downloads/icon.png`;
+
+  const getImage = `wget ${spawnInfo.sprite} -O '${notificationImage}'`; // save sprite locally;
+
+  const downloadImage = () => {
+    return new Promise((resolve, reject) => {
+      exec(getImage, (error, stdout, stderr) => {
+        if (error || stderr) {
+          reject(error || stderr);
+        } else {
+          resolve();
+        }
+      });
+    });
+  };
+
+  // Use async/await to download the image
+  const sendNotification = async () => {
+    try {
+      await downloadImage();
+      // Send notification only if the image download was successful
+      exec(
+        `termux-notification --title "${notificationTitle}" --content "${notificationText}" --action "${notificationAction}" --priority "high" --channel-id "PCG-spawn-detected" --image-path "${notificationImage}"`,
+        (error, stdout, stderr) => {
+          if (error) {
+            console.error(`Error sending notification: ${error.message}`);
+          }
+          if (stderr) {
+            console.error(`Error sending notification: ${stderr}`);
+          }
+        }
+      );
+    } catch (error) {
+      console.error('Error downloading image:', error);
+    }
+  };
+
+  // Call the function
+  sendNotification();
 }
