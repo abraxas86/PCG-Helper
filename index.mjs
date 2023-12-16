@@ -85,23 +85,66 @@ console.clear();
 console.log(`\n\n${pokeballArt}`);
 console.log('\n\nPokemonCommunityAugmentation: Awaiting next spawn...');
 
+// Pokecheck Timers
+const userTimers = {};
+const userPokemonNames = {} ;
+
+// Check for pingback of Pokecheck
+const pokeCheckRegex = /@(\S+) ((?:\S+\s?)+) is not registered in your Pokédex: :x:/;
+const pokeCheckRegex2 =  /@(\S+) Please choose a valid Pokémon or Pokédex-ID./;
+
+
 client.on('message', async(channel, tags, message, self) => {
     if (self) return;
    
     const options = { hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: true };
     const timestamp = new Date().toLocaleTimeString('en-US', options);
     const sender = tags.username;
+    const pokeCheckResponse = message.match(pokeCheckRegex); //for pokecheck pingback (pokemon not registered)
+    const pokeCheckResponse2 = message.match(pokeCheckRegex2); //for pokecheck pingback (invalid pokemon name)
+
+
+    //Pokecheck
+	if (message.match(/^!pokecheck/i))
+	{
+        if (!userTimers[sender]) {
+            // Use the user-specific object to store pokemonName
+            userPokemonNames[sender] = pokeCheckResponse ? pokeCheckResponse[2] : ''; 
+
+            userTimers[sender] = setTimeout(() => {
+                // Use the user-specific pokemonName in the response
+                if (!channel.toLowerCase().includes("deemonrider")){
+	            	if (!isMobile && !isSilent){
+               		 client.say(channel, `@${sender} ${userPokemonNames[sender]} is registered in your pokedex: ✔`);
+               		}
+               	}
+            }, 1000);
+        }
+	}
+
+
+		// Check for the expected response from PokemonCommunityGame
+		const expectedResponseRegex = /(@\S+) ((?:\S+\s?)+) registered in/i;
+		const expectedResponseRegex2 = /@(\S+) Please choose a valid Pokémon/i;
+		const matchResult = message.match(expectedResponseRegex);
+		const responseFor = matchResult ? matchResult[1].substring(1) : null;
+		//const pokeFor = matchResult ? matchResult[2] : null;
+
+		if (message.match(expectedResponseRegex) && userTimers[responseFor]) {
+			console.log ('detected!')
+		    // Clear the timer since the expected response came before the timer expired
+		    clearTimeout(userTimers[responseFor]);
+		    delete userTimers[responseFor];
+		    delete userPokemonNames[responseFor];
+		}
 	
 	//PCG Bot Messages
 	if (tags['user-id'] === '519435394' || tags['user-id'] === '71635907' || tags.username.toLowerCase() === 'deemonrider')
 	{ 
 		const spawnEvent = /A wild (.*?) appears/ig.exec(message);
 
-
 		if (spawnEvent) 
 		{
-			console.log(`debug: Match found: ${message}`);
-			console.log(`debug: [${channel}]: ${message}`);
 			const spawned = spawnEvent[1];
 			
 			const spawnInfo = await getPokeInfo(spawned);
@@ -163,15 +206,17 @@ client.on('message', async(channel, tags, message, self) => {
 			if (spawnInfo.is_Mythical === true)
 			{ LegendOrMyth = 'Mythical!'; }
 
-			if (!isSilent && !isMobile)
-			{
-				client.say(channel, `Pokedex Information about ${spawned}:`);
-				client.say(channel, `[𝙲𝚊𝚝𝚌𝚑 𝚁𝚊𝚝𝚎: ${spawnInfo.capture_rate}] blankSpace [𝚃𝚢𝚙𝚎: ${spawnInfo.types}] blankSpace [ ${useBalls.join(' ')} ]`)
-				client.say(channel, `Recommended balls: ${useBalls} ( ${useBalls.join(' ')} )`);
+			if (!channel.toLowerCase().includes("deemonrider")) {
+				if (!isSilent && !isMobile)
+				{
+					client.say(channel, `Pokedex Information about ${spawned}:`);
+					client.say(channel, `[𝙲𝚊𝚝𝚌𝚑 𝚁𝚊𝚝𝚎: ${spawnInfo.capture_rate}] blankSpace [𝚃𝚢𝚙𝚎: ${spawnInfo.types}] blankSpace [ ${useBalls.join(' ')} ]`)
+					client.say(channel, `Recommended balls: ${useBalls} ( ${useBalls.join(' ')} )`);
 
-				if (spawnInfo.is_Legendary || spawnInfo.is_Mythical)
-					{ client.say(channel, `ALERTA ${LegendOrMyth.toUpperCase()}! ${LegendOrMyth.toUpperCase()}! ${LegendOrMyth.toUpperCase()}! ${LegendOrMyth.toUpperCase()}! ${LegendOrMyth.toUpperCase()}! ALERTA`) }
-			}	
+					if (spawnInfo.is_Legendary || spawnInfo.is_Mythical)
+						{ client.say(channel, `ALERTA ${LegendOrMyth.toUpperCase()}! ${LegendOrMyth.toUpperCase()}! ${LegendOrMyth.toUpperCase()}! ${LegendOrMyth.toUpperCase()}! ${LegendOrMyth.toUpperCase()}! ALERTA`) }
+				}
+			}
 			
 			console.clear();
 
