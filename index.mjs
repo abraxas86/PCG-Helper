@@ -98,6 +98,8 @@ const pokeCheckRegex2 =  /@(\S+) Please choose a valid Pokémon or Pokédex-ID./
 
 client.on('message', async(channel, tags, message, self) => {
     if (self) return;
+
+   // console.log (`[${channel}] <${tags['display-name']} (${tags['user-id']}: ${message})`);
    
     const options = { hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: true };
     const timestamp = new Date().toLocaleTimeString('en-US', options);
@@ -105,10 +107,10 @@ client.on('message', async(channel, tags, message, self) => {
     const pokeCheckResponse  = message.match(pokeCheckRegex); //for pokecheck pingback (pokemon not registered)
     const pokeCheckResponse2 = message.match(pokeCheckRegex2); //for pokecheck pingback (invalid pokemon name)
 
-
     //Pokecheck
 	if (message.match(/^!pokecheck/i))
 	{
+return;
         if (!userTimers[sender]) {
             // Use the user-specific object to store pokemonName
             userPokemonNames[sender] = pokeCheckResponse ? pokeCheckResponse[2] : ''; 
@@ -142,9 +144,9 @@ client.on('message', async(channel, tags, message, self) => {
 	//PCG Bot Messages
 	if (tags['user-id'] === '519435394' || tags['user-id'] === '71635907')
 	{ 
-		const spawnEvent = /A wild (.*?) appears/ig.exec(message);
+		const spawnEvent = /.*?A wild (.*?) appears.*/gi.exec(message);
 
-		if (spawnEvent) 
+		if (spawnEvent)
 		{
 			const spawned = spawnEvent[1];
 			
@@ -235,7 +237,19 @@ async function getPokeInfo(pokemonName){ // with Async/Await
 	// Nidoran (Male)
 	if (pokemonName.match(/Nidoran♂/ig))
 	{ pokemonName = 'nidoran-m'; }
+
+	// Flabebe
+	if (pokemonName.match(/Flabébé/ig))
+	{ pokemonName = 'flabebe'; }
 	
+	// Mimikyu
+	if (pokemonName.match(/Mimikyu/ig))
+	{ pokemonName = '778'; }
+
+	// Pumpkaboo
+	if (pokemonName.match(/Pumpkaboo/ig))
+	{ pokemonName = '710'; }
+
 	
 	try 
 	{
@@ -389,3 +403,6 @@ const downloadImage = () => {
   // Call the function
   sendNotification();
 }
+
+
+// HolidaySanta A wild Mime Jr. appears HolidaySanta Catch it using !pokecatch (winners revealed in 90s)
