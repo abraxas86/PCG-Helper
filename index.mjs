@@ -150,6 +150,7 @@ return;
 		{
 			const spawned = spawnEvent[1];
 			
+			console.log("DEBUG: Waiting for SpawnInfo");
 			const spawnInfo = await getPokeInfo(spawned);
 			const useBalls  = ballChecker(spawnInfo);
 
@@ -210,7 +211,7 @@ function parseMessage(data)
         { return null; }
 };
 
-async function getPokeInfo(pokemonName){ // with Async/Await
+async function getPokeInfo(pokemonName){ // with Async/
 	//Sanitize variable to meet API requirements
 	pokemonName = pokemonName.toLowerCase().replace(/ /g, '-').replace(/\./g, '');
 	
@@ -253,9 +254,10 @@ async function getPokeInfo(pokemonName){ // with Async/Await
 	
 	try 
 	{
+		console.log("Debug: Awaiting PokeInfo");
 		const pokeInfo		= await dex.getPokemonByName(pokemonName);
 		const pokemonID		= pokeInfo.id;
-		const pokeTypesRaw  	= pokeInfo.types;
+		const pokeTypesRaw  = pokeInfo.types;
 		var pokeTypes 		= [];
 		const pokeWeight	= pokeInfo.weight; // 0 to 9999
 		const pokeStats		= pokeInfo.stats;
@@ -267,6 +269,7 @@ async function getPokeInfo(pokemonName){ // with Async/Await
 		}
 		
 		
+		console.log("Debug: Awaiting pokeSpeciesInfo");
 		const pokeSpeciesInfo 	= await dex.getPokemonSpeciesByName(pokemonID);
 		const captureRate		= pokeSpeciesInfo.capture_rate; //int 1-255, higher = easier to catch
 		const isLegendary		= pokeSpeciesInfo.is_legendary; //boolean
@@ -382,6 +385,7 @@ const downloadImage = () => {
   // Use async/await to download the image
   const sendNotification = async () => {
     try {
+	console.log("DEBUG: Await downloadImage");
       await downloadImage();
       // Send notification only if the image download was successful
       exec(
