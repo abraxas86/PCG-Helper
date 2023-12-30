@@ -152,6 +152,7 @@ return;
 			
 			console.log("DEBUG: Waiting for SpawnInfo");
 			const spawnInfo = await getPokeInfo(spawned);
+			console.log("DEBUG: Getting Balls");
 			const useBalls  = ballChecker(spawnInfo);
 
 			if (isMobile) {
@@ -299,6 +300,7 @@ async function getPokeInfo(pokemonName){ // with Async/
 
 function ballChecker(pokemon)
 {
+	console.log("DEBUG: Entered ballChecker");
 	var balls 	= [];
 	var pokeHP	= getBaseStat(pokemon.stats, 'hp');
 	var pokeSpeed	= getBaseStat(pokemon.stats, 'speed');
@@ -346,7 +348,9 @@ function ballChecker(pokemon)
 
 	if (pokeSpeed >= 100)
 	{ balls.push('Fastball'); }
-
+	
+	console.log("Debug: Completed ballChecker Logic.");
+	console.log("Returning Balls...");
 	return balls;
 }
 
