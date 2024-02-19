@@ -1,0 +1,5 @@
+{
+  "username": "[the user the script will use]",
+  "auth": "oauth:[oauth token]",
+  "channels": ["channels", "to", "join"]
+}
