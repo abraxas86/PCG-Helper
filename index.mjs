@@ -260,7 +260,7 @@ async function getPokeInfo(pokemonName){ // with Async/
 	{ pokemonName = '877'; }
 
 	// Farfetch'd
-	if (pokemonName.match(/Farfetch'd/ig))
+	if (pokemonName.match(/Farfetch/ig))
 	{ pokemonName = '83'; }
 	
 	try 
