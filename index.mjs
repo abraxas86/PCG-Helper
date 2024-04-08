@@ -262,6 +262,10 @@ async function getPokeInfo(pokemonName){ // with Async/
 	// Farfetch'd
 	if (pokemonName.match(/Farfetch/ig))
 	{ pokemonName = '83'; }
+
+	// Indeedee
+	if (pokemonName.match(/Indeedee/ig))
+	{ pokemonName = '876'; }
 	
 	try 
 	{
