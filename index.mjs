@@ -24,8 +24,16 @@ import('child_process')
   });
 
 
+const dexOptions = {
+	protocol: 'https',
+	hostName: 'localhost:443',
+	versionPath: '/api/v2/',
+	cacheLimit: 100 * 1000, // 100s
+	timeout: 5 * 1000 // 5s
+  }
+
 let botAcct, botToken, channels; // Bot creds
-const dex = new Pokedex();
+const dex = new Pokedex(dexOptions);
 
 try {
     const content = fs.readFileSync('./botinfo.txt', 'utf-8');
@@ -35,7 +43,9 @@ try {
     botToken = config.auth;
     channels = config.channels;
     }
-catch (error) {
+
+catch (error) 
+{
     console.error(`Error reading the file ${botConfigPath}:`, error);
 }
 
@@ -110,7 +120,7 @@ client.on('message', async(channel, tags, message, self) => {
     //Pokecheck
 	if (message.match(/^!pokecheck/i))
 	{
-return;
+		return;
         if (!userTimers[sender]) {
             // Use the user-specific object to store pokemonName
             userPokemonNames[sender] = pokeCheckResponse ? pokeCheckResponse[2] : ''; 
@@ -179,7 +189,7 @@ return;
 					client.say(channel, `Recommended balls: ${useBalls} ( ${useBalls.join(' ')} )`);
 
 					if (spawnInfo.is_Legendary || spawnInfo.is_Mythical)
-						{ client.say(channel, `ALERTA ${LegendOrMyth.toUpperCase()}! ${LegendOrMyth.toUpperCase()}! ${LegendOrMyth.toUpperCase()}! ${LegendOrMyth.toUpperCase()}! ${LegendOrMyth.toUpperCase()}! ALERTA`) }
+						{ client.say(channel, `ALERT: A ${LegendOrMyth.toUpperCase()}! ${LegendOrMyth.toUpperCase()}! ${LegendOrMyth.toUpperCase()}! ${LegendOrMyth.toUpperCase()}! ${LegendOrMyth.toUpperCase()}! ALERTA`) }
 				}
 			}
 			
@@ -270,7 +280,13 @@ async function getPokeInfo(pokemonName){ // with Async/
 	try 
 	{
 		console.log("Debug: Awaiting PokeInfo");
-		const pokeInfo		= await dex.getPokemonByName(pokemonName);
+		try {
+			const pokeInfo		= await dex.getPokemonByName(pokemonName);
+		}
+		catch{
+			console.log(`Can't find it cap'n: ${pokemonName}!`);
+			return "Error";
+		}
 		const pokemonID		= pokeInfo.id;
 		const pokeTypesRaw  = pokeInfo.types;
 		var pokeTypes 		= [];
@@ -285,7 +301,14 @@ async function getPokeInfo(pokemonName){ // with Async/
 		
 		
 		console.log("Debug: Awaiting pokeSpeciesInfo");
-		const pokeSpeciesInfo 	= await dex.getPokemonSpeciesByName(pokemonID);
+		try {
+			const pokeSpeciesInfo 	= await dex.getPokemonSpeciesByName(pokemonID);
+		}
+		catch
+		{
+			console.log(`Can't find this Pokemon, chief: ${pokemonName}!`);
+			return "Error";
+		}
 		const captureRate		= pokeSpeciesInfo.capture_rate; //int 1-255, higher = easier to catch
 		const isLegendary		= pokeSpeciesInfo.is_legendary; //boolean
 		const isMythical		= pokeSpeciesInfo.is_mythical;  //boolean
@@ -315,7 +338,12 @@ function ballChecker(pokemon)
 	var balls 	= [];
 	var pokeHP	= getBaseStat(pokemon.stats, 'hp');
 	var pokeSpeed	= getBaseStat(pokemon.stats, 'speed');
-	
+
+	if (!pokemon || !pokemon.types || !Array.isArray(pokemon.types)) {
+        console.error("Invalid or empty 'pokemon' object or 'types' array provided.");
+        return ["Error fetching balls"];
+    }
+
 	if (pokemon.capture_rate >= 175)
 	{ 
 	  balls.push('Pokeball'); 
@@ -369,6 +397,11 @@ function ballChecker(pokemon)
 // Function to get the base_stat for a specific stat name
 function getBaseStat(stats, statName)
 {
+
+	if (!stats || !Array.isArray(stats)) {
+        console.error("Invalid or empty 'stats' array provided.");
+        return null;
+    }
 	// console.log(stats);
 		const stat = stats.find(stat => stat.stat.name.toLowerCase() === statName.toLowerCase());
 		// console.log(`${statName}: ${stat}`);
