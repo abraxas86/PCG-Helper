@@ -277,8 +277,8 @@ async function getPokeInfo(pokemonName){ // with Async/
 	if (pokemonName.match(/Indeedee/ig))
 	{ pokemonName = '876'; }
 
-	// Shamyn
-	if (pokemonName.match(/Shamyn/ig))
+	// Shaymin
+	if (pokemonName.match(/Shaymin/ig))
 	{ pokemonName = '492'; }
 
 	try 
