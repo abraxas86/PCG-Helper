@@ -25,8 +25,8 @@ import('child_process')
 
 
 const dexOptions = {
-	protocol: 'https',
-	hostName: 'localhost:443',
+	protocol: 'http',
+	hostName: '192.168.10.11:443',
 	versionPath: '/api/v2/',
 	cacheLimit: 100 * 1000, // 100s
 	timeout: 5 * 1000 // 5s
@@ -120,6 +120,7 @@ client.on('message', async(channel, tags, message, self) => {
     //Pokecheck
 	if (message.match(/^!pokecheck/i))
 	{
+        client.say(channel,'ping');
 		return;
         if (!userTimers[sender]) {
             // Use the user-specific object to store pokemonName
@@ -171,6 +172,7 @@ client.on('message', async(channel, tags, message, self) => {
 
 			if (spawnInfo === null)
 			{ 
+                console.log('Spawninfo === null (line 175)');                            
 				return;
 			}
 
@@ -189,7 +191,7 @@ client.on('message', async(channel, tags, message, self) => {
 					client.say(channel, `Recommended balls: ${useBalls} ( ${useBalls.join(' ')} )`);
 
 					if (spawnInfo.is_Legendary || spawnInfo.is_Mythical)
-						{ client.say(channel, `ALERT: A ${LegendOrMyth.toUpperCase()}! ${LegendOrMyth.toUpperCase()}! ${LegendOrMyth.toUpperCase()}! ${LegendOrMyth.toUpperCase()}! ${LegendOrMyth.toUpperCase()}! ALERTA`) }
+						{ client.say(channel, `ALERT: A ${LegendOrMyth.toUpperCase()}! ${LegendOrMyth.toUpperCase()}! ${LegendOrMyth.toUpperCase()}! ${LegendOrMyth.toUpperCase()}! ${LegendOrMyth.toUpperCase()}! ALERT!`) }
 				}
 			}
 			
@@ -227,8 +229,11 @@ function parseMessage(data)
 
 async function getPokeInfo(pokemonName){ // with Async/
 	//Sanitize variable to meet API requirements
-	pokemonName = pokemonName.toLowerCase().replace(/ /g, '-').replace(/\./g, '');
-	
+	pokemonName = pokemonName.toLowerCase()
+        .replace(/ /g, '-') //replaces spaces with hyphens
+        .replace(/\./g, '') //remove periods
+        .replace(/'/g, ''); //remove apostrophes from pokemon names
+    
 	//MANUAL OVERRIDES FOR STUPID POKEMON NAMES
 	// These pokemon names are listed in a weird way in the API.
 	// These fixes should help make sure they're properly ID'd.
@@ -285,7 +290,7 @@ async function getPokeInfo(pokemonName){ // with Async/
 	{
 		console.log("Debug: Awaiting PokeInfo");
 		try {
-			const pokeInfo		= await dex.getPokemonByName(pokemonName);
+			const pokeInfo		= await dex.getPokemonByName('pikachu');
 		}
 		catch{
 			console.log(`Can't find it cap'n: ${pokemonName}!`);
